@@ -1,12 +1,23 @@
+import http from 'http';
 import express from 'express';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import compression from 'compression';
 import cors from 'cors';
 
-const PORT = 8080;
+const router = express();
 
-const app = express();
+const PORT = process.env.PORT || 8080;
+const ENVIRONMENT = process.env.NODE_ENV || 'development';
 
-app.use(cors());
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
+router.use(cookieParser());
+router.use(compression());
+router.use(cors());
 
-app.listen(PORT, () => {
-	console.log(`Server is running on port ${PORT}`);
+const server = http.createServer(router);
+
+server.listen(PORT, () => {
+	console.log(`Server running on port ${PORT} in ${ENVIRONMENT} mode`);
 });
