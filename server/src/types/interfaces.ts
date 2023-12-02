@@ -10,8 +10,6 @@ import {
 
 export interface ICommon {
 	id: string;
-	createdAt: Date;
-	updatedAt: Date;
 }
 
 export interface IAccount extends ICommon {

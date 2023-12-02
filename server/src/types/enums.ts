@@ -1,8 +1,8 @@
 export enum AccountStatus {
-	Active,
-	Inactive,
-	Prospecting,
-	Closed,
+	Active = 'Active',
+	Inactive = 'Inactive',
+	Prospecting = 'Prospecting',
+	Closed = 'Closed',
 }
 
 export enum ContactStatus {
