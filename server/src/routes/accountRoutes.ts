@@ -7,4 +7,6 @@ router.post('/', AccountController.createAccount);
 
 router.get('/', AccountController.getAccounts);
 
+router.get('/:id', AccountController.getAccount);
+
 export default router;

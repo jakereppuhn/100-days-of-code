@@ -45,4 +45,20 @@ export class AccountController {
 			}
 		}
 	}
+
+	static async getAccount(req: Request, res: Response) {
+		try {
+			const { id } = req.params;
+
+			const account = await AccountService.getAccountById(id);
+
+			res.status(200).json(account);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				res.status(400).json({ message: error.message });
+			} else {
+				res.status(500).json({ message: 'An unexpected error occurred' });
+			}
+		}
+	}
 }

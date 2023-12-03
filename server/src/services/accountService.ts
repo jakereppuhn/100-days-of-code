@@ -1,5 +1,5 @@
 import Account from '../models/account';
-import {  IAccount, IAccountQueryParams } from '../types/interfaces';
+import { IAccount, IAccountQueryParams } from '../types/interfaces';
 import { formatEmail, formatPhoneNumber, formatWebsiteUrl } from '../utils/formatter';
 
 export class AccountService {
@@ -59,5 +59,19 @@ export class AccountService {
 		});
 
 		return accounts;
+	}
+
+	static async getAccountById(id: string) {
+		if (!id.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)) {
+			throw new Error('Invalid ID format');
+		}
+
+		const account = await Account.findByPk(id);
+
+		if (!account) {
+			throw new Error('Account not found');
+		}
+
+		return account;
 	}
 }
