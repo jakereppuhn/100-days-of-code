@@ -61,4 +61,36 @@ export class AccountController {
 			}
 		}
 	}
+
+	static async updateAccount(req: Request, res: Response) {
+		try {
+			const { id } = req.params;
+
+			const account = await AccountService.updateAccount(id, req.body);
+
+			res.status(200).json({ account });
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				res.status(400).json({ message: error.message });
+			} else {
+				res.status(500).json({ message: 'An unexpected error occurred' });
+			}
+		}
+	}
+
+	static async deleteAccount(req: Request, res: Response) {
+		try {
+			const { id } = req.params;
+
+			await AccountService.deleteAccount(id);
+
+			res.status(204).json({});
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				res.status(400).json({ message: error.message });
+			} else {
+				res.status(500).json({ message: 'An unexpected error occurred' });
+			}
+		}
+	}
 }
