@@ -7,6 +7,6 @@ router.post('/', AccountController.createAccount);
 
 router.get('/', AccountController.getAccounts);
 
-router.get('/:id', AccountController.getAccount);
+router.get('/:id', AccountController.getAccountById);
 
 export default router;

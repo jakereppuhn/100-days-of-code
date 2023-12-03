@@ -46,7 +46,7 @@ export class AccountController {
 		}
 	}
 
-	static async getAccount(req: Request, res: Response) {
+	static async getAccountById(req: Request, res: Response) {
 		try {
 			const { id } = req.params;
 
