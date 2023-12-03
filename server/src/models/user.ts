@@ -6,7 +6,7 @@ class User extends Model<IUser> implements IUser {
 	public firstName!: string;
 	public lastName!: string;
 	public email!: string;
-	public passwordHash!: string;
+	public password!: string;
 
 	public static initialize(sequelize: Sequelize) {
 		this.init(
@@ -28,7 +28,7 @@ class User extends Model<IUser> implements IUser {
 					type: DataTypes.STRING,
 					allowNull: false,
 				},
-				passwordHash: {
+				password: {
 					type: DataTypes.STRING,
 					allowNull: false,
 				},

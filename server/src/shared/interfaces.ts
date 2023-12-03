@@ -89,7 +89,7 @@ export interface IUser extends ICommon {
 	firstName: string;
 	lastName: string;
 	email: string;
-	passwordHash: string;
+	password: string;
 }
 
 export interface UserWithoutPassword extends ICommon {
