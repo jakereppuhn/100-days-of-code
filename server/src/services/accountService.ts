@@ -1,24 +1,35 @@
 import Account from '../models/account';
+import User from '../models/user';
 import { IAccount, IAccountQueryParams } from '../shared/interfaces';
 import { formatEmail, formatPhoneNumber, formatWebsiteUrl } from '../utils/formatter';
 
 export class AccountService {
 	static async createAccount(accountData: IAccount) {
-		const { ownerId, primaryContactId, name, industry, website, email, phone, status, addressId } = accountData;
+		const { ownerId, name, industry, website, email, phone, status } = accountData;
 
-		if (!ownerId || !primaryContactId || !name || !industry || !website || !email || !phone || !status || !addressId) {
+		if (!ownerId || !name || !industry || !email || !phone || !status) {
 			throw new Error('Missing required fields');
 		}
 
-		const formattedWebsite = formatWebsiteUrl(website);
+		const owner = await User.findByPk(ownerId);
+
+		if (!owner) {
+			throw new Error('The user you are trying to assign as the owner does not exist');
+		}
+
+		let formattedWebsite: string | undefined;
+
+		if (website) {
+			formattedWebsite = formatWebsiteUrl(website);
+		}
+
 		const formattedEmail = formatEmail(email);
 		const formattedPhone = formatPhoneNumber(phone);
 
 		const accountExists = await Account.findOne({
 			where: {
-				primaryContactId: primaryContactId,
 				name: name,
-				addressId: addressId,
+				email: formattedEmail,
 			},
 		});
 
