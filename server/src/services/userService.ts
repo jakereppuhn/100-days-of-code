@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import User from '../models/user';
 import { IUser } from '../shared/interfaces';
 import { formatEmail } from '../utils/formatter';
+import Account from '../models/account';
 
 export class UserService {
 	static async createUser(userData: IUser) {
@@ -59,7 +60,7 @@ export class UserService {
 	static async getUsers() {
 		const users = await User.findAll();
 
-		const userCount = await users.length;
+		const userCount = users.length;
 
 		const usersWithoutPassword = users.map((user) => {
 			const { password, ...userWithoutPassword } = user.toJSON();
@@ -80,6 +81,32 @@ export class UserService {
 		if (!user) {
 			throw new Error('User not found');
 		}
+
+		return user;
+	}
+
+	static async deleteUser(id: string) {
+		if (!id.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)) {
+			throw new Error('Invalid ID format');
+		}
+
+		const user = await User.findByPk(id);
+
+		if (!user) {
+			throw new Error('User not found');
+		}
+
+		const associatedAccounts = await Account.findAll({
+			where: {
+				ownerId: id,
+			},
+		});
+
+		if (associatedAccounts.length > 0) {
+			throw new Error('User cannot be deleted because they are the owner of one or more accounts');
+		}
+
+		await user.destroy();
 
 		return user;
 	}
