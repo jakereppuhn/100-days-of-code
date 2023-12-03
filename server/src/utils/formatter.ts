@@ -43,4 +43,16 @@ const formatPhoneNumber = (phone: string): string => {
 	return cleaned;
 };
 
-export { formatWebsiteUrl, formatEmail, formatPhoneNumber };
+const formatUUID = (uuid: string): string => {
+	if (!uuid || !uuid.trim()) {
+		throw new Error('Invalid input: UUID is empty');
+	}
+
+	if (!uuid.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/)) {
+		throw new Error('Invalid input: UUID is not in a proper format');
+	}
+
+	return uuid;
+};
+
+export { formatWebsiteUrl, formatEmail, formatPhoneNumber, formatUUID };
