@@ -1,18 +1,19 @@
 import { Router } from 'express';
 import { AccountController } from '../controllers/accountController';
+import { protect } from '../middleware/authMiddleware';
 
 const router = Router();
 
-router.post('/', AccountController.createAccount);
+router.post('/', protect, AccountController.createAccount);
 
-router.get('/', AccountController.getAccounts);
+router.get('/', protect, AccountController.getAccounts);
 
-router.get('/:id', AccountController.getAccountById);
+router.get('/:id', protect, AccountController.getAccountById);
 
-router.patch('/:id', AccountController.updateAccount);
+router.patch('/:id', protect, AccountController.updateAccount);
 
-router.delete('/:id', AccountController.deleteAccount);
+router.delete('/:id', protect, AccountController.deleteAccount);
 
-router.get('/:id/owner', AccountController.getAccountOwner);
+router.get('/:id/owner', protect, AccountController.getAccountOwner);
 
 export default router;
