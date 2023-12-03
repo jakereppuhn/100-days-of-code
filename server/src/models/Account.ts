@@ -1,8 +1,8 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
-import { IAccount, IAddress } from '../types/interfaces';
+import { IAccount } from '../types/interfaces';
 import { AccountStatus } from '../types/enums';
 
-export class Account extends Model<IAccount> implements IAccount {
+class Account extends Model<IAccount> implements IAccount {
 	public id!: string;
 	public ownerId!: string;
 	public primaryContactId!: string;
