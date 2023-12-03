@@ -7,6 +7,7 @@ import cors from 'cors';
 import db from './models/index';
 
 import accountRoutes from './routes/accountRoutes';
+import userRoutes from './routes/userRoutes';
 
 const router = express();
 
@@ -43,6 +44,7 @@ router.use(compression());
 router.use(cors());
 
 router.use('/api/v1/accounts', accountRoutes);
+router.use('/api/v1/users', userRoutes);
 
 const server = http.createServer(router);
 
