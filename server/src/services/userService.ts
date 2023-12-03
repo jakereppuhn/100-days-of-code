@@ -59,6 +59,28 @@ export class UserService {
 	static async getUsers() {
 		const users = await User.findAll();
 
-		return users;
+		const userCount = await users.length;
+
+		const usersWithoutPassword = users.map((user) => {
+			const { password, ...userWithoutPassword } = user.toJSON();
+
+			return userWithoutPassword;
+		});
+
+		return { users: usersWithoutPassword, count: userCount };
+	}
+
+	static async getUserById(id: string) {
+		if (!id.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)) {
+			throw new Error('Invalid ID format');
+		}
+
+		const user = await User.findByPk(id);
+
+		if (!user) {
+			throw new Error('User not found');
+		}
+
+		return user;
 	}
 }
