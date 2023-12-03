@@ -5,14 +5,14 @@ import { AccountStatus } from '../shared/enums';
 class Account extends Model<IAccount> implements IAccount {
 	public id!: string;
 	public ownerId!: string;
-	public primaryContactId!: string;
+	public primaryContactId?: string;
 	public name!: string;
 	public industry!: string;
-	public website!: string;
+	public website?: string;
 	public email!: string;
 	public phone!: string;
 	public status!: AccountStatus;
-	public addressId!: string;
+	public addressId?: string;
 	public createdAt!: Date;
 	public updatedAt!: Date;
 
@@ -30,7 +30,7 @@ class Account extends Model<IAccount> implements IAccount {
 				},
 				primaryContactId: {
 					type: DataTypes.UUID,
-					allowNull: false,
+					allowNull: true,
 				},
 				name: {
 					type: DataTypes.STRING,
@@ -42,7 +42,7 @@ class Account extends Model<IAccount> implements IAccount {
 				},
 				website: {
 					type: DataTypes.STRING,
-					allowNull: false,
+					allowNull: true,
 				},
 				email: {
 					type: DataTypes.STRING,
@@ -59,7 +59,7 @@ class Account extends Model<IAccount> implements IAccount {
 				},
 				addressId: {
 					type: DataTypes.UUID,
-					allowNull: false,
+					allowNull: true,
 				},
 			},
 			{

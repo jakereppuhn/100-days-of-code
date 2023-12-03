@@ -14,19 +14,19 @@ export interface ICommon {
 
 export interface IAccount extends ICommon {
 	ownerId: string;
-	primaryContactId: string;
+	primaryContactId?: string;
 	name: string;
 	industry: string;
-	website: string;
+	website?: string;
 	email: string;
 	phone: string;
 	status: AccountStatus;
-	addressId: string;
+	addressId?: string;
 }
 
 export interface IAccountQueryParams {
 	filter?: Record<string, any>;
-	sort?: string; 
+	sort?: string;
 	page?: number;
 	pageSize?: number;
 	fields?: string[];
