@@ -9,6 +9,8 @@ class Account extends Model<IAccount> implements IAccount {
 	public name!: string;
 	public industry!: string;
 	public website!: string;
+	public email!: string;
+	public phone!: string;
 	public status!: AccountStatus;
 	public addressId!: string;
 	public createdAt!: Date;
@@ -39,6 +41,14 @@ class Account extends Model<IAccount> implements IAccount {
 					allowNull: false,
 				},
 				website: {
+					type: DataTypes.STRING,
+					allowNull: false,
+				},
+				email: {
+					type: DataTypes.STRING,
+					allowNull: false,
+				},
+				phone: {
 					type: DataTypes.STRING,
 					allowNull: false,
 				},

@@ -18,8 +18,18 @@ export interface IAccount extends ICommon {
 	name: string;
 	industry: string;
 	website: string;
+	email: string;
+	phone: string;
 	status: AccountStatus;
 	addressId: string;
+}
+
+export interface IAccountQueryParams {
+	filter?: Record<string, any>;
+	sort?: string; 
+	page?: number;
+	pageSize?: number;
+	fields?: string[];
 }
 
 export interface IAddress extends ICommon {
