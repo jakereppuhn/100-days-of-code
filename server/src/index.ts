@@ -6,6 +6,8 @@ import compression from 'compression';
 import cors from 'cors';
 import db from './models/index';
 
+import accountRoutes from './routes/accountRoutes';
+
 const router = express();
 
 const PORT = process.env.PORT || 8080;
@@ -39,6 +41,8 @@ router.use(bodyParser.urlencoded({ extended: true }));
 router.use(cookieParser());
 router.use(compression());
 router.use(cors());
+
+router.use('/api/v1/accounts', accountRoutes);
 
 const server = http.createServer(router);
 
