@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { sign } from 'jsonwebtoken';
 import User from '../models/user';
 import { IUser } from '../shared/interfaces';
 import { formatEmail } from '../utils/formatter';
@@ -109,5 +110,27 @@ export class UserService {
 		await user.destroy();
 
 		return user;
+	}
+
+	static async authenticateUser(email: string, password: string) {
+		if (!email || !password) {
+			throw new Error('Missing credentials');
+		}
+
+		const user = await User.findOne({ where: { email } });
+		if (!user) {
+			throw new Error('User not found');
+		}
+
+		const passwordIsValid = await bcrypt.compare(password, user.password);
+		if (!passwordIsValid) {
+			throw new Error('Invalid password');
+		}
+
+		const accessToken = sign({ userId: user.id, email: user.email }, process.env.JWT_KEY as string, {
+			expiresIn: '24h',
+		});
+
+		return { accessToken };
 	}
 }
