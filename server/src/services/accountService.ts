@@ -171,4 +171,24 @@ export class AccountService {
 
 		return account;
 	}
+
+	static async getAccountOwner(id: string) {
+		if (!id.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)) {
+			throw new Error('Invalid ID format');
+		}
+
+		const account = await Account.findByPk(id);
+
+		if (!account) {
+			throw new Error('Account not found');
+		}
+
+		const owner = await User.findByPk(account.ownerId);
+
+		if (!owner) {
+			throw new Error('Account owner not found');
+		}
+
+		return owner;
+	}
 }

@@ -93,4 +93,20 @@ export class AccountController {
 			}
 		}
 	}
+
+	static async getAccountOwner(req: Request, res: Response) {
+		try {
+			const { id } = req.params;
+
+			const owner = await AccountService.getAccountOwner(id);
+
+			res.status(200).json(owner);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				res.status(400).json({ message: error.message });
+			} else {
+				res.status(500).json({ message: 'An unexpected error occurred' });
+			}
+		}
+	}
 }

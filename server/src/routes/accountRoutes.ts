@@ -13,4 +13,6 @@ router.patch('/:id', AccountController.updateAccount);
 
 router.delete('/:id', AccountController.deleteAccount);
 
+router.get('/:id/owner', AccountController.getAccountOwner);
+
 export default router;
