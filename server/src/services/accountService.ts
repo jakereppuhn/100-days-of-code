@@ -1,5 +1,5 @@
 import Account from '../models/account';
-import { IAccount, IAccountQueryParams } from '../types/interfaces';
+import { IAccount, IAccountQueryParams } from '../shared/interfaces';
 import { formatEmail, formatPhoneNumber, formatWebsiteUrl } from '../utils/formatter';
 
 export class AccountService {

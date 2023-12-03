@@ -1,6 +1,6 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
-import { IContact } from '../types/interfaces';
-import { ContactStatus } from '../types/enums';
+import { IContact } from '../shared/interfaces';
+import { ContactStatus } from '../shared/enums';
 
 class Contact extends Model<IContact> implements IContact {
 	public id!: string;

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { AccountService } from '../services/accountService';
-import { IAccountQueryParams } from '../types/interfaces';
+import { IAccountQueryParams } from '../shared/interfaces';
 
 export class AccountController {
 	static async createAccount(req: Request, res: Response) {
