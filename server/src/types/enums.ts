@@ -6,9 +6,9 @@ export enum AccountStatus {
 }
 
 export enum ContactStatus {
-	Active,
-	Inactive,
-	Flagged,
+	Active = 'Active',
+	Inactive = 'Inactive',
+	Flagged = 'Flagged',
 }
 
 export enum InteractionType {
