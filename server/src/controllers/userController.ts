@@ -82,7 +82,7 @@ export class UserController {
 		}
 	}
 
-	public static async logoutUser(req: Request, res: Response) {
+	static async logoutUser(req: Request, res: Response) {
 		try {
 			res.cookie('jwt', '', {
 				httpOnly: true,
@@ -97,7 +97,7 @@ export class UserController {
 		}
 	}
 
-	public static async validateSession(req: ExtendedRequest, res: Response) {
+	static async validateSession(req: ExtendedRequest, res: Response) {
 		if (req.user) {
 			const userWithoutPassword = { ...req.user.get({ plain: true }) };
 			delete userWithoutPassword.password;
