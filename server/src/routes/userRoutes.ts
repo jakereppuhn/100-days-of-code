@@ -16,6 +16,6 @@ router.post('/authenticate', UserController.authenticateUser);
 
 router.post('/logout', UserController.logoutUser);
 
-router.post('/session', UserController.validateSession);
+router.post('/session', protect, UserController.validateSession);
 
 export default router;
