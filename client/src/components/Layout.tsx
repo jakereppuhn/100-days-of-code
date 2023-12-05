@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 
@@ -7,7 +7,15 @@ type Props = {
 };
 
 const Layout = (props: Props) => {
-	const [isSidebarOpen, setSidebarOpen] = useState(false);
+	const [isSidebarOpen, setSidebarOpen] = useState(() => {
+		const saved = localStorage.getItem('sidebarState');
+		return saved !== null ? JSON.parse(saved) : false;
+	});
+
+	useEffect(() => {
+		localStorage.setItem('sidebarState', JSON.stringify(isSidebarOpen));
+	}, [isSidebarOpen]);
+
 	return (
 		<div className="h-screen w-screen bg-red-50 flex">
 			<Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setSidebarOpen(!isSidebarOpen)} />
