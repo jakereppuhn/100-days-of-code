@@ -17,11 +17,11 @@ const Layout = (props: Props) => {
 	}, [isSidebarOpen]);
 
 	return (
-		<div className="h-screen w-screen bg-red-50 flex">
+		<div className="flex h-screen">
 			<Sidebar isOpen={isSidebarOpen} toggleSidebar={() => setSidebarOpen(!isSidebarOpen)} />
-			<div className="flex flex-col grow bg-blue-500">
+			<div className="flex-1 flex flex-col">
 				<Navbar onToggleSidebar={() => setSidebarOpen(!isSidebarOpen)} />
-				<div className="flex-1 overflow-auto bg-gray-100 p-4 flex">{props.children}</div>
+				<main className="flex-1 overflow-auto p-4">{props.children}</main>
 			</div>
 		</div>
 	);
