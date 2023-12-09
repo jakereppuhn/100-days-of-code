@@ -3,9 +3,6 @@ const AccountsTable = () => {
     <section className="overflow-hidden py-4">
       <div className="rounded-xl border border-neutral-100 bg-neutral-50 py-5">
         <div className="px-6">
-          <h3 className="font-heading pb-8 text-lg font-semibold text-neutral-600">
-            Transaction History
-          </h3>
           <div className="mb-5 w-full overflow-x-auto">
             <table className="w-full min-w-max">
               <thead>

@@ -8,14 +8,14 @@ router.post('/', protect, UserController.createUser);
 
 router.get('/', protect, UserController.getUsers);
 
+router.get('/session', protect, UserController.validateSession);
+
 router.get('/:id', protect, UserController.getUserById);
 
 router.delete('/:id', protect, UserController.deleteUser);
 
-router.post('/authenticate', UserController.authenticateUser);
+router.post('/login', UserController.authenticateUser);
 
 router.post('/logout', UserController.logoutUser);
-
-router.post('/session', protect, UserController.validateSession);
 
 export default router;

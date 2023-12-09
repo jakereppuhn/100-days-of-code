@@ -41,7 +41,16 @@ router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(cookieParser());
 router.use(compression());
-router.use(cors());
+router.use(
+	cors({
+		origin: (origin, callback) => {
+			if (!origin) return callback(null, true);
+
+			return callback(null, origin);
+		},
+		credentials: true,
+	})
+);
 
 router.use('/api/v1/accounts', accountRoutes);
 router.use('/api/v1/users', userRoutes);
