@@ -1,11 +1,14 @@
 import { Request, Response } from 'express';
 import { AccountService } from '../services/accountService';
-import { IAccountQueryParams } from '../shared/interfaces';
+import { IQueryParams } from '../shared/interfaces';
+import { ExtendedRequest } from '../middleware/authMiddleware';
 
 export class AccountController {
-	static async createAccount(req: Request, res: Response) {
+	static async createAccount(req: ExtendedRequest, res: Response) {
 		try {
-			const account = await AccountService.createAccount(req.body);
+			const createdBy = req.user.id;
+
+			const account = await AccountService.createAccount(createdBy, req.body);
 
 			res.status(201).json({ account });
 		} catch (error: unknown) {
@@ -26,7 +29,7 @@ export class AccountController {
 
 			const fieldsArray = typeof fields === 'string' ? fields.split(',') : fields;
 
-			const params: IAccountQueryParams = {
+			const params: IQueryParams = {
 				filter: filter ? JSON.parse(filter as string) : undefined,
 				sort: sort as string | undefined,
 				page: pageNumber,
@@ -62,21 +65,21 @@ export class AccountController {
 		}
 	}
 
-	static async updateAccount(req: Request, res: Response) {
-		try {
-			const { id } = req.params;
+	// static async updateAccount(req: Request, res: Response) {
+	// 	try {
+	// 		const { id } = req.params;
 
-			const account = await AccountService.updateAccount(id, req.body);
+	// 		const account = await AccountService.updateAccount(id, req.body);
 
-			res.status(200).json({ account });
-		} catch (error: unknown) {
-			if (error instanceof Error) {
-				res.status(400).json({ message: error.message });
-			} else {
-				res.status(500).json({ message: 'An unexpected error occurred' });
-			}
-		}
-	}
+	// 		res.status(200).json({ account });
+	// 	} catch (error: unknown) {
+	// 		if (error instanceof Error) {
+	// 			res.status(400).json({ message: error.message });
+	// 		} else {
+	// 			res.status(500).json({ message: 'An unexpected error occurred' });
+	// 		}
+	// 	}
+	// }
 
 	static async deleteAccount(req: Request, res: Response) {
 		try {
@@ -85,22 +88,6 @@ export class AccountController {
 			await AccountService.deleteAccount(id);
 
 			res.status(204).json({});
-		} catch (error: unknown) {
-			if (error instanceof Error) {
-				res.status(400).json({ message: error.message });
-			} else {
-				res.status(500).json({ message: 'An unexpected error occurred' });
-			}
-		}
-	}
-
-	static async getAccountOwner(req: Request, res: Response) {
-		try {
-			const { id } = req.params;
-
-			const owner = await AccountService.getAccountOwner(id);
-
-			res.status(200).json(owner);
 		} catch (error: unknown) {
 			if (error instanceof Error) {
 				res.status(400).json({ message: error.message });

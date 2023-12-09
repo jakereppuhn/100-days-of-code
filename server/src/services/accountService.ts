@@ -1,15 +1,26 @@
 import { Op } from 'sequelize';
+import { validate } from 'uuid';
 import Account from '../models/account';
 import User from '../models/user';
-import { IAccount, IAccountQueryParams } from '../shared/interfaces';
-import { formatEmail, formatPhoneNumber, formatUUID, formatWebsiteUrl } from '../utils/formatter';
+import { IAccount, IQueryParams } from '../shared/interfaces';
+import { formatPhoneNumber, formatWebsiteUrl } from '../utils/formatter';
 
 export class AccountService {
-	static async createAccount(accountData: IAccount) {
-		const { ownerId, name, industry, website, email, phone, status } = accountData;
+	static async createAccount(createdBy: string, accountData: IAccount) {
+		const { owner, name, website, phone } = accountData;
 
-		if (!ownerId || !name || !industry || !email || !phone || !status) {
-			throw new Error('Missing required fields');
+		if (!name) {
+			throw new Error('Account name is required');
+		}
+
+		const accountExists = await Account.findOne({
+			where: {
+				name: name,
+			},
+		});
+
+		if (accountExists) {
+			throw new Error('An account with the same name already exists');
 		}
 
 		let formattedWebsite: string | undefined;
@@ -18,39 +29,49 @@ export class AccountService {
 			formattedWebsite = formatWebsiteUrl(website);
 		}
 
-		const formattedUUID = formatUUID(ownerId);
-		const formattedEmail = formatEmail(email);
-		const formattedPhone = formatPhoneNumber(phone);
+		let formattedPhone: string | undefined;
 
-		const owner = await User.findByPk(ownerId);
+		if (phone) {
+			formattedPhone = formatPhoneNumber(phone);
+		}
 
-		if (!owner) {
+		if (!validate(owner.id)) {
+			throw new Error('Invalid owner ID format');
+		}
+
+		const ownerExists = await User.findByPk(owner.id);
+
+		if (!ownerExists) {
 			throw new Error('The user you are trying to assign as the owner does not exist');
 		}
 
-		const accountExists = await Account.findOne({
-			where: {
-				name: name,
-				email: formattedEmail,
-			},
-		});
+		if (!validate(createdBy)) {
+			throw new Error('Invalid createdBy ID format');
+		}
 
-		if (accountExists) {
-			throw new Error('Account already exists');
+		const creatorExist = await User.findByPk(createdBy);
+
+		if (!creatorExist) {
+			throw new Error('The user you are trying to assign as the creator does not exist');
 		}
 
 		const account = await Account.create({
 			...accountData,
-			ownerId: formattedUUID,
+			owner: {
+				id: ownerExists.id,
+				name: ownerExists.firstName + ' ' + ownerExists.lastName,
+				email: ownerExists.email,
+			},
 			website: formattedWebsite,
-			email: formattedEmail,
 			phone: formattedPhone,
+			createdBy: creatorExist.id,
+			updatedBy: creatorExist.id,
 		});
 
 		return account;
 	}
 
-	static async getAccounts(params: IAccountQueryParams) {
+	static async getAccounts(params: IQueryParams) {
 		const { filter, sort, page, pageSize, fields } = params;
 
 		let whereClause = filter || {};
@@ -78,7 +99,7 @@ export class AccountService {
 	}
 
 	static async getAccountById(id: string) {
-		if (!id.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)) {
+		if (!validate(id)) {
 			throw new Error('Invalid ID format');
 		}
 
@@ -91,73 +112,73 @@ export class AccountService {
 		return account;
 	}
 
-	static async updateAccount(id: string, accountData: Partial<IAccount>) {
-		if (!id.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)) {
-			throw new Error('Invalid ID format');
-		}
+	// static async updateAccount(id: string, accountData: Partial<IAccount>) {
+	// 	if (!validate(id)) {
+	// 		throw new Error('Invalid ID format');
+	// 	}
 
-		const account = await Account.findByPk(id);
+	// 	const account = await Account.findByPk(id);
 
-		if (!account) {
-			throw new Error('Account not found');
-		}
+	// 	if (!account) {
+	// 		throw new Error('Account not found');
+	// 	}
 
-		let formattedUUID: string | undefined;
+	// 	let formattedUUID: string | undefined;
 
-		if (accountData.ownerId) {
-			formattedUUID = formatUUID(accountData.ownerId);
-			const owner = await User.findByPk(accountData.ownerId);
-			if (!owner) {
-				throw new Error('The user you are trying to assign as the owner does not exist');
-			}
-		}
+	// 	if (accountData.owner.id) {
+	// 		formattedUUID = formatUUID(accountData.owner.id);
+	// 		const owner = await User.findByPk(accountData.owner.id);
+	// 		if (!owner) {
+	// 			throw new Error('The user you are trying to assign as the owner does not exist');
+	// 		}
+	// 	}
 
-		const updateData: Partial<IAccount> = {};
+	// 	const updateData: Partial<IAccount> = {};
 
-		if (accountData.name) {
-			updateData.name = accountData.name;
-		}
-		if (accountData.industry) {
-			updateData.industry = accountData.industry;
-		}
-		if (accountData.website) {
-			updateData.website = formatWebsiteUrl(accountData.website);
-		}
-		if (accountData.email) {
-			updateData.email = formatEmail(accountData.email);
-		}
-		if (accountData.phone) {
-			updateData.phone = formatPhoneNumber(accountData.phone);
-		}
-		if (accountData.status) {
-			updateData.status = accountData.status;
-		}
-		if (accountData.ownerId) {
-			updateData.ownerId = formattedUUID;
-		}
+	// 	if (accountData.name) {
+	// 		updateData.name = accountData.name;
+	// 	}
+	// 	if (accountData.industry) {
+	// 		updateData.industry = accountData.industry;
+	// 	}
+	// 	if (accountData.website) {
+	// 		updateData.website = formatWebsiteUrl(accountData.website);
+	// 	}
+	// 	if (accountData.email) {
+	// 		updateData.email = formatEmail(accountData.email);
+	// 	}
+	// 	if (accountData.phone) {
+	// 		updateData.phone = formatPhoneNumber(accountData.phone);
+	// 	}
+	// 	if (accountData.status) {
+	// 		updateData.status = accountData.status;
+	// 	}
+	// 	if (accountData.owner.id) {
+	// 		updateData.owner.id = formattedUUID;
+	// 	}
 
-		const whereClause: any = { id: { [Op.ne]: id } };
-		if (updateData.name) {
-			whereClause.name = updateData.name;
-		}
-		if (updateData.email) {
-			whereClause.email = updateData.email;
-		}
+	// 	const whereClause: any = { id: { [Op.ne]: id } };
+	// 	if (updateData.name) {
+	// 		whereClause.name = updateData.name;
+	// 	}
+	// 	if (updateData.email) {
+	// 		whereClause.email = updateData.email;
+	// 	}
 
-		if (updateData.name || updateData.email) {
-			const accountExists = await Account.findOne({ where: whereClause });
-			if (accountExists) {
-				throw new Error('An account with the same name and email already exists');
-			}
-		}
+	// 	if (updateData.name || updateData.email) {
+	// 		const accountExists = await Account.findOne({ where: whereClause });
+	// 		if (accountExists) {
+	// 			throw new Error('An account with the same name and email already exists');
+	// 		}
+	// 	}
 
-		await account.update(updateData);
+	// 	await account.update(updateData);
 
-		return account;
-	}
+	// 	return account;
+	// }
 
 	static async deleteAccount(id: string) {
-		if (!id.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)) {
+		if (!validate(id)) {
 			throw new Error('Invalid ID format');
 		}
 
@@ -172,23 +193,7 @@ export class AccountService {
 		return account;
 	}
 
-	static async getAccountOwner(id: string) {
-		if (!id.match(/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/)) {
-			throw new Error('Invalid ID format');
-		}
+	static async listRelatedContacts(id: string) {}
 
-		const account = await Account.findByPk(id);
-
-		if (!account) {
-			throw new Error('Account not found');
-		}
-
-		const owner = await User.findByPk(account.ownerId);
-
-		if (!owner) {
-			throw new Error('Account owner not found');
-		}
-
-		return owner;
-	}
+	static async listRelatedEmails(id: string) {}
 }

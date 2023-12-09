@@ -99,7 +99,7 @@ export class UserService {
 
 		const associatedAccounts = await Account.findAll({
 			where: {
-				ownerId: id,
+				owner: { id: id },
 			},
 		});
 

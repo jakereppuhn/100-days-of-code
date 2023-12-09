@@ -1,5 +1,8 @@
 import {
-	AccountStatus,
+	AccountIndustry,
+	AccountOwnership,
+	AccountRating,
+	AccountType,
 	ContactStatus,
 	InteractionType,
 	LeadSource,
@@ -12,19 +15,7 @@ export interface ICommon {
 	id: string;
 }
 
-export interface IAccount extends ICommon {
-	ownerId: string;
-	primaryContactId?: string;
-	name: string;
-	industry: string;
-	website?: string;
-	email: string;
-	phone: string;
-	status: AccountStatus;
-	addressId?: string;
-}
-
-export interface IAccountQueryParams {
+export interface IQueryParams {
 	filter?: Record<string, any>;
 	sort?: string;
 	page?: number;
@@ -32,12 +23,43 @@ export interface IAccountQueryParams {
 	fields?: string[];
 }
 
+export interface IAccount extends ICommon {
+	owner: IAccountOwner;
+	name: string;
+	site?: string;
+	parentAccountId?: string;
+	number?: string;
+	type?: AccountType;
+	industry?: AccountIndustry;
+	annualRevenue?: number;
+	rating?: AccountRating;
+	phone?: string;
+	fax?: string;
+	website?: string;
+	tickerSymbol?: string;
+	ownership?: AccountOwnership;
+	employees?: number;
+	sicCode?: string;
+	description?: string;
+	billingAddress?: IAddress;
+	shippingAddress?: IAddress;
+	tags?: ITag[];
+	createdBy: string;
+	updatedBy: string;
+}
+
+export interface IAccountOwner {
+	id: string;
+	name?: string;
+	email?: string;
+}
+
 export interface IAddress extends ICommon {
-	street: string;
-	city: string;
-	state: string;
-	zip: string;
-	country: string;
+	street?: string;
+	city?: string;
+	state?: string;
+	zip?: string;
+	country?: string;
 }
 
 export interface IContact extends ICommon {
@@ -70,6 +92,11 @@ export interface ILead extends ICommon {
 	potentialValue?: number;
 	addressId?: string;
 	notes?: string;
+}
+
+export interface ITag extends ICommon {
+	name: string;
+	colorCode: string;
 }
 
 export interface ITask extends ICommon {

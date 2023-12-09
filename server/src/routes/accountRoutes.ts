@@ -10,10 +10,8 @@ router.get('/', protect, AccountController.getAccounts);
 
 router.get('/:id', protect, AccountController.getAccountById);
 
-router.patch('/:id', protect, AccountController.updateAccount);
+// router.patch('/:id', protect, AccountController.updateAccount);
 
 router.delete('/:id', protect, AccountController.deleteAccount);
-
-router.get('/:id/owner', protect, AccountController.getAccountOwner);
 
 export default router;

@@ -1,20 +1,31 @@
 import { Model, DataTypes, Sequelize } from 'sequelize';
-import { IAccount } from '../shared/interfaces';
-import { AccountStatus } from '../shared/enums';
+import { IAccount, IAccountOwner, IAddress, ITag } from '../shared/interfaces';
+import { AccountIndustry, AccountOwnership, AccountRating, AccountType } from '../shared/enums';
 
 class Account extends Model<IAccount> implements IAccount {
 	public id!: string;
-	public ownerId!: string;
-	public primaryContactId?: string;
+	public owner!: IAccountOwner;
 	public name!: string;
-	public industry!: string;
+	public site?: string;
+	public parentAccountId?: string;
+	public number?: string;
+	public type?: AccountType;
+	public industry?: AccountIndustry;
+	public annualRevenue?: number;
+	public rating?: AccountRating;
+	public phone?: string;
+	public fax?: string;
 	public website?: string;
-	public email!: string;
-	public phone!: string;
-	public status!: AccountStatus;
-	public addressId?: string;
-	public createdAt!: Date;
-	public updatedAt!: Date;
+	public tickerSymbol?: string;
+	public ownership?: AccountOwnership;
+	public employees?: number;
+	public sicCode?: string;
+	public description?: string;
+	public billingAddress?: IAddress;
+	public shippingAddress?: IAddress;
+	public tags?: ITag[];
+	public createdBy!: string;
+	public updatedBy!: string;
 
 	public static initialize(sequelize: Sequelize) {
 		this.init(
@@ -24,42 +35,79 @@ class Account extends Model<IAccount> implements IAccount {
 					primaryKey: true,
 					defaultValue: DataTypes.UUIDV4,
 				},
-				ownerId: {
-					type: DataTypes.UUID,
+				owner: {
+					type: DataTypes.JSON,
 					allowNull: false,
-				},
-				primaryContactId: {
-					type: DataTypes.UUID,
-					allowNull: true,
 				},
 				name: {
 					type: DataTypes.STRING,
 					allowNull: false,
 				},
+				site: {
+					type: DataTypes.STRING,
+				},
+				parentAccountId: {
+					type: DataTypes.UUID,
+				},
+				number: {
+					type: DataTypes.STRING,
+				},
+				type: {
+					type: DataTypes.ENUM,
+					values: Object.values(AccountType),
+				},
 				industry: {
-					type: DataTypes.STRING,
-					allowNull: false,
+					type: DataTypes.ENUM,
+					values: Object.values(AccountIndustry),
 				},
-				website: {
-					type: DataTypes.STRING,
-					allowNull: true,
+				annualRevenue: {
+					type: DataTypes.INTEGER,
 				},
-				email: {
-					type: DataTypes.STRING,
-					allowNull: false,
+				rating: {
+					type: DataTypes.ENUM,
+					values: Object.values(AccountRating),
 				},
 				phone: {
 					type: DataTypes.STRING,
-					allowNull: false,
 				},
-				status: {
+				fax: {
+					type: DataTypes.STRING,
+				},
+				website: {
+					type: DataTypes.STRING,
+				},
+				tickerSymbol: {
+					type: DataTypes.STRING,
+				},
+				ownership: {
 					type: DataTypes.ENUM,
-					values: Object.values(AccountStatus),
+					values: Object.values(AccountOwnership),
+				},
+				employees: {
+					type: DataTypes.INTEGER,
+				},
+				sicCode: {
+					type: DataTypes.STRING,
+				},
+				description: {
+					type: DataTypes.STRING,
+				},
+				billingAddress: {
+					type: DataTypes.JSON,
+				},
+				shippingAddress: {
+					type: DataTypes.JSON,
+				},
+				tags: {
+					type: DataTypes.JSON,
+				},
+				createdBy: {
+					type: DataTypes.UUID,
 					allowNull: false,
 				},
-				addressId: {
+				updatedBy: {
 					type: DataTypes.UUID,
-					allowNull: true,
+					allowNull: false,
 				},
 			},
 			{
