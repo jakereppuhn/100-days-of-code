@@ -32,10 +32,10 @@ const PageMenu = ({ tabs, activeTab, setActiveTab }: PageMenuProps) => {
         {tabs.map((tab) => (
           <button
             key={tab.value}
-            className={`rounded-md px-4 py-2 ${
+            className={`border-b-2 px-4 py-2 ${
               activeTab === tab.value
-                ? "bg-gray-200 text-gray-800"
-                : "text-gray-500"
+                ? "border-blue-500 text-blue-500"
+                : "border-transparent text-gray-400 hover:border-gray-200"
             }`}
             onClick={() => setActiveTab(tab.value)}
           >
