@@ -7,7 +7,8 @@ const API_URL = "http://localhost:8080/api/v1/accounts";
 const useGetAccounts = () => {
   const [accountsData, setAccountsData] = useState<{
     accounts: IAccount[];
-    count: number;
+    totalAccounts: number;
+    totalPages: number;
   } | null>(null);
   const [filter, setFilter] = useState<string | undefined>(undefined);
   const [sort, setSort] = useState<string | undefined>(undefined);
@@ -30,7 +31,12 @@ const useGetAccounts = () => {
           withCredentials: true,
         });
 
-        setAccountsData(response.data);
+        const data = response.data;
+        setAccountsData({
+          accounts: data.accounts,
+          totalAccounts: data.totalAccounts,
+          totalPages: data.totalPages,
+        });
       } catch (err) {
         if (axios.isAxiosError(err)) {
           setError(err.response?.data?.message || "An error occurred");
@@ -40,7 +46,9 @@ const useGetAccounts = () => {
       }
     };
 
-    fetchAccounts();
+    if (page !== undefined && pageSize !== undefined) {
+      fetchAccounts();
+    }
   }, [filter, sort, page, pageSize, fields]);
 
   return {

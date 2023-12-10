@@ -1,15 +1,27 @@
-const formatWebsiteUrl = (website: string): string => {
-	if (!website || !website.trim()) {
-		throw new Error('Invalid input: Website URL is empty');
+const formatWebsiteUrl = (website: string) => {
+	if (!website || typeof website !== 'string' || !website.trim()) {
+		throw new Error('Invalid input: Website URL is empty or not a string');
 	}
 
-	const urlPattern = /^(?:https?:\/\/)?(?:www\.)?[a-zA-Z0-9./]+$/;
-	if (!urlPattern.test(website)) {
-		throw new Error('Invalid input: Website URL is not in a proper format');
+	// A simplified check to see if the string contains at least one dot, which is a very basic requirement for a domain
+	if (!website.includes('.')) {
+		throw new Error('Invalid input: Website URL does not seem valid');
 	}
 
-	let domain = website.replace(/^(?:https?:\/\/)?(?:www\.)?/i, '').split('/')[0];
-	return `https://${domain}`;
+	// Prepending 'https://' if it's missing
+	if (!/^https?:\/\//i.test(website)) {
+		website = 'https://' + website;
+	}
+
+	// Extracting the domain and path
+	let domainAndPath = website.split('//')[1];
+
+	// Ensuring no trailing slash
+	if (domainAndPath.endsWith('/')) {
+		domainAndPath = domainAndPath.slice(0, -1);
+	}
+
+	return 'https://' + domainAndPath;
 };
 
 const formatEmail = (email: string): string => {
@@ -32,15 +44,11 @@ const formatPhoneNumber = (phone: string): string => {
 
 	let cleaned = phone.replace(/\D/g, '');
 
-	if (cleaned.length < 10) {
-		throw new Error('Invalid input: Phone number is too short');
+	if (cleaned.length !== 10) {
+		throw new Error('Invalid input: Phone number should be 10 digits');
 	}
 
-	if (cleaned.length === 10) {
-		cleaned = `+1${cleaned}`;
-	}
-
-	return cleaned;
+	return cleaned.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3');
 };
 
 const formatUUID = (uuid: string): string => {

@@ -37,9 +37,13 @@ export class AccountController {
 				fields: fieldsArray as string[] | undefined,
 			};
 
-			const accounts = await AccountService.getAccounts(params);
+			const result = await AccountService.getAccounts(params);
 
-			res.status(200).json(accounts);
+			res.status(200).json({
+				accounts: result.accounts,
+				totalAccounts: result.count,
+				totalPages: result.totalPages,
+			});
 		} catch (error: unknown) {
 			if (error instanceof Error) {
 				res.status(400).json({ message: error.message });

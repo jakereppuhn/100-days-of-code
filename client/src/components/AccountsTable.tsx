@@ -1,50 +1,24 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import useGetAccounts from "../hooks/useGetAccounts";
-import SortIcon from "./SortIcon";
+import { IAccount } from "../shared/interfaces";
 
 const AccountsTable = () => {
-  const { accountsData, setFilter, setSort, setPage, setPageSize, error } =
-    useGetAccounts();
+  const {
+    accountsData,
+    setPage,
+    setPageSize,
+    // Include other setters if needed for features like sorting, filtering
+  } = useGetAccounts();
 
-  // Local state for input fields
-  const [localFilter, setLocalFilter] = useState("");
-  const [localSort, setLocalSort] = useState("");
-  const [localPage, setLocalPage] = useState(1);
-  const [localPageSize, setLocalPageSize] = useState(10);
+  // Set the initial page and page size
+  const initialPageSize = 10;
+  const [localPage, setLocalPage] = useState<number>(1);
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setLocalFilter(e.target.value);
-  const handlePageChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setLocalPage(Number(e.target.value));
-  const handlePageSizeChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setLocalPageSize(Number(e.target.value));
-
-  const applyFilter = () => setFilter(localFilter);
-  const applyPage = (newPage: number) => {
-    setLocalPage(newPage);
-    setPage(newPage);
-  };
-  const applyPageSize = () => setPageSize(localPageSize);
-
-  const handleSortChange = (fieldToSort: string) => {
-    let newSort = `${fieldToSort},ASC`;
-
-    if (localSort.startsWith(fieldToSort)) {
-      newSort = localSort.endsWith(",ASC")
-        ? `${fieldToSort},DESC`
-        : `${fieldToSort},ASC`;
-    }
-
-    setLocalSort(newSort);
-  };
-
+  // Update the page and page size in the hook when localPage changes
   useEffect(() => {
-    if (localSort) {
-      setSort(localSort);
-    }
-  }, [localSort]);
-
-  const totalPages = Math.ceil((accountsData?.count ?? 0) / localPageSize);
+    setPage(localPage);
+    setPageSize(initialPageSize);
+  }, [localPage, setPage, setPageSize]);
 
   return (
     <section className="overflow-hidden py-4">
@@ -54,70 +28,44 @@ const AccountsTable = () => {
             <table className="w-full min-w-max">
               <thead>
                 <tr className="text-left">
-                  <th className="border-b border-neutral-100 pb-3.5">
-                    <button
-                      className="inline-flex items-center text-sm font-medium text-gray-500"
-                      onClick={() => handleSortChange("name")}
-                    >
-                      <span className="mr-1.5">Account Name</span>
-                      <SortIcon
-                        isSorted={localSort.startsWith("name")}
-                        isDesc={localSort === "name,DESC"}
-                      />
-                    </button>
+                  <th className="bg-neutral-50 px-4 py-3 text-sm font-semibold text-neutral-500">
+                    Account Name
                   </th>
-                  <th className="border-b border-neutral-100 pb-3.5">
-                    <button
-                      className="inline-flex items-center text-sm font-medium text-gray-500"
-                      onClick={() => handleSortChange("phone")}
-                    >
-                      <span className="mr-1.5">Phone</span>
-                      <SortIcon
-                        isSorted={localSort.startsWith("phone")}
-                        isDesc={localSort === "phone,DESC"}
-                      />
-                    </button>
+                  <th className="bg-neutral-50 px-4 py-3 text-sm font-semibold text-neutral-500">
+                    Phone Number
                   </th>
-                  <th className="border-b border-neutral-100 pb-3.5">
-                    <button
-                      className="inline-flex items-center text-sm font-medium text-gray-500"
-                      onClick={() => handleSortChange("website")}
-                    >
-                      <span className="mr-1.5">Website</span>
-                      <SortIcon
-                        isSorted={localSort.startsWith("website")}
-                        isDesc={localSort === "website,DESC"}
-                      />
-                    </button>
+                  <th className="bg-neutral-50 px-4 py-3 text-sm font-semibold text-neutral-500">
+                    Account Owner
                   </th>
-                  <th className="border-b border-neutral-100 pb-3.5">
-                    <button
-                      className="inline-flex items-center text-sm font-medium text-gray-500"
-                      onClick={() => handleSortChange("owner.name")}
-                    >
-                      <span className="mr-1.5">Account Owner</span>
-                      <SortIcon
-                        isSorted={localSort.startsWith("owner.name")}
-                        isDesc={localSort === "owner.name,DESC"}
-                      />
-                    </button>
+                  <th className="bg-neutral-50 px-4 py-3 text-sm font-semibold text-neutral-500">
+                    Tags
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {accountsData?.accounts.map((account) => (
+                {accountsData?.accounts.map((account: IAccount) => (
                   <tr key={account.id}>
-                    <td className="border-b border-neutral-100 py-2.5 pr-4">
-                      <span className="font-medium">{account.name}</span>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-neutral-900">
+                      {account.name}
                     </td>
-                    <td className="border-b border-neutral-100 py-2.5 pr-4">
-                      <span className="font-medium">{account.phone}</span>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-neutral-900">
+                      {account.phone}
                     </td>
-                    <td className="border-b border-neutral-100 py-2.5 pr-4">
-                      <span className="font-medium">{account.website}</span>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-neutral-900">
+                      {account.owner.name}
                     </td>
-                    <td className="border-b border-neutral-100 py-2.5 pr-4">
-                      <span className="font-medium">{account.owner?.name}</span>
+                    <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-neutral-900">
+                      {account.tags &&
+                        account.tags.map((tag) => (
+                          <span
+                            key={tag.name}
+                            style={{ backgroundColor: tag.colorCode }}
+                            className="mr-2 rounded px-2 py-1 text-white"
+                          >
+                            {tag.name.charAt(0).toUpperCase() +
+                              tag.name.slice(1)}
+                          </span>
+                        ))}
                     </td>
                   </tr>
                 ))}
@@ -127,30 +75,19 @@ const AccountsTable = () => {
           <div className="-m-2 flex flex-wrap items-center justify-between">
             <div className="w-auto p-2">
               <div className="-m-0.5 flex flex-wrap">
+                {/* Previous Page Button */}
                 <div className="w-auto p-0.5">
                   <button
                     className="flex h-9 w-9 items-center justify-center rounded-sm border hover:border-neutral-300"
                     onClick={() => setLocalPage(Math.max(1, localPage - 1))}
                     disabled={localPage === 1}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="h-4 w-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M15.75 19.5L8.25 12l7.5-7.5"
-                      />
-                    </svg>
+                    {/* SVG for left arrow */}
                   </button>
                 </div>
 
-                {[...Array(totalPages).keys()].map((index) => (
+                {/* Page Number Buttons */}
+                {[...Array(accountsData?.totalPages).keys()].map((index) => (
                   <div key={index} className="w-auto p-0.5">
                     <button
                       className={`flex h-9 w-9 items-center justify-center rounded-sm border ${
@@ -165,35 +102,21 @@ const AccountsTable = () => {
                   </div>
                 ))}
 
+                {/* Next Page Button */}
                 <div className="w-auto p-0.5">
                   <button
                     className="flex h-9 w-9 items-center justify-center rounded-sm border hover:border-neutral-300"
-                    onClick={() =>
-                      setLocalPage(Math.min(localPage + 1, totalPages))
-                    }
-                    disabled={localPage === totalPages}
+                    onClick={() => setLocalPage(localPage + 1)}
+                    disabled={localPage === accountsData?.totalPages}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="h-4 w-4"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M8.25 4.5l7.5 7.5-7.5 7.5"
-                      />
-                    </svg>
+                    {/* SVG for right arrow */}
                   </button>
                 </div>
               </div>
             </div>
             <div className="w-auto p-2">
               <p className="text-sm text-neutral-400">
-                Showing page {localPage} of {totalPages}
+                Showing page {localPage} of {accountsData?.totalPages}
               </p>
             </div>
           </div>

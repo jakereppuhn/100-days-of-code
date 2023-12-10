@@ -93,9 +93,10 @@ export class AccountService {
 			attributes,
 		});
 
-		const accountCount = accounts.length;
+		const totalCount = await Account.count({ where: whereClause });
+		const totalPages = pageSize ? Math.ceil(totalCount / pageSize) : 0;
 
-		return { accounts, count: accountCount };
+		return { accounts, count: totalCount, totalPages };
 	}
 
 	static async getAccountById(id: string) {
