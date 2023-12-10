@@ -1,24 +1,33 @@
 import { useState, useEffect } from "react";
 import useGetAccounts from "../hooks/useGetAccounts";
 import { IAccount } from "../shared/interfaces";
+import SortIcon from "./SortIcon";
 
 const AccountsTable = () => {
-  const {
-    accountsData,
-    setPage,
-    setPageSize,
-    // Include other setters if needed for features like sorting, filtering
-  } = useGetAccounts();
+  const { accountsData, setPage, setPageSize, setSort } = useGetAccounts();
 
-  // Set the initial page and page size
   const initialPageSize = 10;
   const [localPage, setLocalPage] = useState<number>(1);
+  const [localSort, setLocalSort] = useState<string>("name,ASC");
 
-  // Update the page and page size in the hook when localPage changes
   useEffect(() => {
     setPage(localPage);
     setPageSize(initialPageSize);
-  }, [localPage, setPage, setPageSize]);
+    setSort(localSort);
+  }, [localPage, localSort, setPage, setPageSize, setSort]);
+
+  const updateSort = (fieldToSort: string) => {
+    let newSort = `${fieldToSort},ASC`;
+
+    if (localSort.startsWith(fieldToSort)) {
+      newSort = localSort.endsWith(",ASC")
+        ? `${fieldToSort},DESC`
+        : `${fieldToSort},ASC`;
+    }
+
+    setLocalSort(newSort);
+    setSort(newSort);
+  };
 
   return (
     <section className="overflow-hidden py-4">
@@ -28,16 +37,43 @@ const AccountsTable = () => {
             <table className="w-full min-w-max">
               <thead>
                 <tr className="text-left">
-                  <th className="bg-neutral-50 px-4 py-3 text-sm font-semibold text-neutral-500">
-                    Account Name
+                  <th className="w-1/4 bg-neutral-50 px-4 py-3 text-sm font-semibold text-neutral-500">
+                    <button
+                      className="flex items-center"
+                      onClick={() => updateSort("name")}
+                    >
+                      <span className="mr-1.5">Account Name</span>
+                      <SortIcon
+                        isSorted={localSort.startsWith("name")}
+                        isDesc={localSort === "name,DESC"}
+                      />
+                    </button>
                   </th>
-                  <th className="bg-neutral-50 px-4 py-3 text-sm font-semibold text-neutral-500">
-                    Phone Number
+                  <th className="w-1/4 bg-neutral-50 px-4 py-3 text-sm font-semibold text-neutral-500">
+                    <button
+                      className="flex items-center"
+                      onClick={() => updateSort("phone")}
+                    >
+                      <span className="mr-1.5">Phone Number</span>
+                      <SortIcon
+                        isSorted={localSort.startsWith("phone")}
+                        isDesc={localSort === "phone,DESC"}
+                      />
+                    </button>
                   </th>
-                  <th className="bg-neutral-50 px-4 py-3 text-sm font-semibold text-neutral-500">
-                    Account Owner
+                  <th className="w-1/4 bg-neutral-50 px-4 py-3 text-sm font-semibold text-neutral-500">
+                    <button
+                      className="flex items-center"
+                      onClick={() => updateSort("owner.name")}
+                    >
+                      <span className="mr-1.5">Account Owner</span>
+                      <SortIcon
+                        isSorted={localSort.startsWith("owner")}
+                        isDesc={localSort === "owner.name,DESC"}
+                      />
+                    </button>
                   </th>
-                  <th className="bg-neutral-50 px-4 py-3 text-sm font-semibold text-neutral-500">
+                  <th className="w-1/4 bg-neutral-50 px-4 py-3 text-sm font-semibold text-neutral-500">
                     Tags
                   </th>
                 </tr>
@@ -75,18 +111,29 @@ const AccountsTable = () => {
           <div className="-m-2 flex flex-wrap items-center justify-between">
             <div className="w-auto p-2">
               <div className="-m-0.5 flex flex-wrap">
-                {/* Previous Page Button */}
                 <div className="w-auto p-0.5">
                   <button
                     className="flex h-9 w-9 items-center justify-center rounded-sm border hover:border-neutral-300"
                     onClick={() => setLocalPage(Math.max(1, localPage - 1))}
                     disabled={localPage === 1}
                   >
-                    {/* SVG for left arrow */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="h-5 w-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M15.75 19.5L8.25 12l7.5-7.5"
+                      />
+                    </svg>
                   </button>
                 </div>
 
-                {/* Page Number Buttons */}
                 {[...Array(accountsData?.totalPages).keys()].map((index) => (
                   <div key={index} className="w-auto p-0.5">
                     <button
@@ -102,14 +149,26 @@ const AccountsTable = () => {
                   </div>
                 ))}
 
-                {/* Next Page Button */}
                 <div className="w-auto p-0.5">
                   <button
                     className="flex h-9 w-9 items-center justify-center rounded-sm border hover:border-neutral-300"
                     onClick={() => setLocalPage(localPage + 1)}
                     disabled={localPage === accountsData?.totalPages}
                   >
-                    {/* SVG for right arrow */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="h-5 w-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8.25 4.5l7.5 7.5-7.5 7.5"
+                      />
+                    </svg>
                   </button>
                 </div>
               </div>
