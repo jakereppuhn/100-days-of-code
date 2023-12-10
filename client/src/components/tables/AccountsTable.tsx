@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import useGetAccounts from "../hooks/useGetAccounts";
-import { IAccount } from "../shared/interfaces";
-import SortIcon from "./SortIcon";
+import useGetAccounts from "../../hooks/useGetAccounts";
+import { IAccount } from "../../shared/interfaces";
+import SortIcon from "../SortIcon";
 
 const AccountsTable = () => {
   const { accountsData, setPage, setPageSize, setSort } = useGetAccounts();

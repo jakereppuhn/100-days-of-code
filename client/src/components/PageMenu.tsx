@@ -56,7 +56,7 @@ const PageMenu = ({ tabs, activeTab, setActiveTab }: PageMenuProps) => {
         {activeTabData?.buttons?.map((button, index) => (
           <button
             key={index}
-            className="flex gap-1 rounded border border-blue-500 bg-blue-500 px-4 py-2 text-sm font-semibold capitalize text-white hover:border-blue-600 hover:bg-blue-600"
+            className="flex gap-1 rounded border-2 border-blue-500 bg-white px-4 py-1.5 text-sm font-semibold capitalize text-blue-500 hover:text-white hover:bg-blue-500 transition-colors"
             onClick={button.onClick}
           >
             {button.icon && <span>{button.icon}</span>}

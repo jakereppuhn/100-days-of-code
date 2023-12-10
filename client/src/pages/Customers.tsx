@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Layout, PageMenu } from "../components";
-import AccountsTable from "../components/AccountsTable";
+import AccountsTable from "../components/tables/AccountsTable";
 
 const Customers = () => {
   const [activeTab, setActiveTab] = useState("accounts");
@@ -12,8 +12,8 @@ const Customers = () => {
     setCreateAccountModal(!createAccountModal);
   };
 
-  const toggleFilterAccountModal = () => {
-    setFilterAccountModal(!filterAccountModal);
+  const handleExport = () => {
+    console.log("export");
   };
 
   const renderTab = () => {
@@ -36,9 +36,8 @@ const Customers = () => {
       label: "Accounts",
       value: "accounts",
       buttons: [
-        { label: "filter", onClick: toggleFilterAccountModal },
         { label: "create", onClick: toggleCreateAccountModal },
-        { label: "export", onClick: toggleFilterAccountModal },
+        { label: "export", onClick: handleExport },
       ],
     },
     {
