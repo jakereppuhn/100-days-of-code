@@ -12,10 +12,6 @@ const Customers = () => {
     setCreateAccountModal(!createAccountModal);
   };
 
-  const handleExport = () => {
-    console.log("export");
-  };
-
   const renderTab = () => {
     switch (activeTab) {
       case "accounts":
@@ -35,10 +31,7 @@ const Customers = () => {
     {
       label: "Accounts",
       value: "accounts",
-      buttons: [
-        { label: "create", onClick: toggleCreateAccountModal },
-        { label: "export", onClick: handleExport },
-      ],
+      buttons: [{ label: "create", onClick: toggleCreateAccountModal }],
     },
     {
       label: "Contacts",
