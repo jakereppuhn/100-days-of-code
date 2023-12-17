@@ -33,7 +33,7 @@ const Button = ({
     base;
 
   const outline =
-    "bg-white text-primary border-2 border-primary hover:bg-primary hover:text-white hover:border-secondary " +
+    "bg-white text-primary border-2 border-primary hover:bg-primary hover:text-white " +
     base;
 
   switch (theme) {
